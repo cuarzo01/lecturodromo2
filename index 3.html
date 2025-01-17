@@ -1,0 +1,428 @@
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Od&#xed;n - Un Juego Literario">
+  <meta property="og:description" content="Ordena los fragmentos del relato para descubrir el destino del Padre de Todos.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#2c3e50">
+  <title>Od&#xed;n</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text&display=swap');
+
+    :root {
+      --primary-color: #c0a375;
+      --secondary-color: #8b7355;
+      --dark-color: #2c3e50;
+      --text-color: #d4d4d4;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Crimson Text', serif;
+      background: var(--dark-color);
+      margin: 0;
+      padding: 10px;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l15 30-15 30L15 30z' fill='%2334495e' fill-opacity='0.1'/%3E%3C/svg%3E");
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      text-align: center;
+      background: rgba(24, 32, 42, 0.95);
+      padding: 1.5rem;
+      border-radius: 15px;
+      border: 2px solid var(--primary-color);
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    h1::before, h1::after {
+      content: "⚔️";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8em;
+      color: #8b7355;
+    }
+
+    h1::before { left: -40px; }
+    h1::after { right: -40px; }
+
+    .attribution {
+      color: #8b7355;
+      font-style: italic;
+      margin-top: 10px;
+      font-size: 1.1em;
+    }
+
+    .instructions {
+      color: #d4d4d4;
+      margin-bottom: 30px;
+      font-size: 1.3em;
+      line-height: 1.7;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cork-board {
+      background-color: #4a3728;
+      border: 10px solid #2a1f1a;
+      border-radius: 10px;
+      padding: 15px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+      position: relative;
+      background-image: 
+        linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(0,0,0,0.1) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.1) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.1) 75%);
+      background-size: 20px 20px;
+    }
+
+    .sticky-note {
+      background-color: #f4e4bc;
+      padding: 20px;
+      border-radius: 2px;
+      cursor: move;
+      touch-action: none;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.1em;
+      line-height: 1.5;
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+      border: 1px solid #d4c5a3;
+      color: #2c1810;
+    }
+
+    .sticky-note::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 25px;
+      height: 25px;
+      background: radial-gradient(circle, #917c6f 30%, #5c4a3d 100%);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .sticky-note:hover {
+      transform: scale(1.05);
+      box-shadow: 3px 3px 15px rgba(0,0,0,0.4);
+    }
+
+    .sticky-note.dragging {
+      opacity: 0.8;
+      transform: scale(1.1);
+      cursor: grabbing;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+      padding: 15px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Cinzel', serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #checkButton {
+      background: linear-gradient(to bottom, #c0a375 0%, #8b7355 100%);
+      color: #1a1a1a;
+      border: 2px solid #8b7355;
+    }
+
+    #resetButton {
+      background: linear-gradient(to bottom, #8b7355 0%, #5c4a3d 100%);
+      color: #fff;
+      border: 2px solid #5c4a3d;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+      font-family: 'Cinzel', serif;
+      font-size: 1.1em;
+    }
+
+    .message.success {
+      display: block;
+      background: linear-gradient(to bottom, rgba(192, 163, 117, 0.2), rgba(139, 115, 85, 0.2));
+      color: #c0a375;
+      border: 1px solid #8b7355;
+    }
+
+    .message.error {
+      display: block;
+      background: linear-gradient(to bottom, rgba(139, 115, 85, 0.2), rgba(92, 74, 61, 0.2));
+      color: #8b7355;
+      border: 1px solid #5c4a3d;
+    }
+
+    @media (min-width: 768px) {
+      .cork-board {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 30px;
+        border-width: 20px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .cork-board {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2em;
+      }
+      
+      h1::before, h1::after {
+        display: none;
+      }
+
+      .sticky-note {
+        font-size: 1em;
+        padding: 15px;
+        min-height: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Od&#xed;n</h1>
+    <div class="attribution">por Jorge Luis Borges y Delia Ingenieros</div>
+    <p class="instructions">En los salones de Olaf Tryggvason, una antigua historia aguarda ser revelada. 
+      Ordena los fragmentos del relato para descubrir el destino del Padre de Todos.</p>
+    
+    <div class="cork-board" id="corkBoard">
+      <!-- Las pegatinas se generarán dinámicamente -->
+    </div>
+
+    <div class="buttons">
+      <button id="checkButton">Verificar Saga</button>
+      <button id="resetButton">Comenzar de Nuevo</button>
+    </div>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>const storyPieces = [{
+  text: "A la corte de Olaf Tryggvason, convertido a la nueva fe, llegó una noche un hombre viejo, envuelto en una capa oscura y con el ala del sombrero sobre los ojos.",
+  order: 1
+}, {
+  text: "El rey le preguntó si sabía hacer algo, y el forastero contestó que sabía tocar el arpa y contar cuentos.",
+  order: 2
+}, {
+  text: "Tocó en el arpa aires antiguos, habló de Gudrun y de Gunnar y, finalmente, refirió el nacimiento de Odín.",
+  order: 3
+}, {
+  text: "Contó que tres parcas vinieron, que las dos primeras le prometieron grandes felicidades y que la tercera dijo, colérica: 'El niño no vivirá más que la vela que está ardiendo a su lado.'",
+  order: 4
+}, {
+  text: "Entonces los padres apagaron la vela para que Odín no muriera.",
+  order: 5
+}, {
+  text: "Olaf Tryggvason descreyó de la historia, y el forastero repitió que era cierto.",
+  order: 6
+}, {
+  text: "El forastero sacó la vela y la encendió. Mientras la miraban arder, dijo que era tarde y que tenía que irse.",
+  order: 7
+}, {
+  text: "Esperaron hasta que la vela se hubo consumido.",
+  order: 8
+}, {
+  text: "A unos pasos de la casa del rey, Odín había muerto.",
+  order: 9
+}];
+class StoryGame {
+  constructor() {
+    this.currentOrder = [];
+    this.touchStartX = 0;
+    this.touchStartY = 0;
+    this.init();
+  }
+  init() {
+    this.shuffleStoryPieces();
+    this.createStickyNotes();
+    this.setupEventListeners();
+  }
+  shuffleStoryPieces() {
+    for (let i = storyPieces.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [storyPieces[i], storyPieces[j]] = [storyPieces[j], storyPieces[i]];
+    }
+  }
+  createStickyNotes() {
+    const corkBoard = document.getElementById('corkBoard');
+    corkBoard.innerHTML = '';
+    storyPieces.forEach((piece, index) => {
+      const stickyNote = document.createElement('div');
+      stickyNote.className = 'sticky-note';
+      stickyNote.draggable = true;
+      stickyNote.dataset.order = piece.order;
+      stickyNote.textContent = piece.text;
+      this.currentOrder[index] = piece.order;
+      corkBoard.appendChild(stickyNote);
+    });
+  }
+  setupEventListeners() {
+    const stickyNotes = document.querySelectorAll('.sticky-note');
+    stickyNotes.forEach(note => {
+      note.addEventListener('dragstart', this.handleDragStart.bind(this));
+      note.addEventListener('dragend', this.handleDragEnd.bind(this));
+      note.addEventListener('dragover', this.handleDragOver.bind(this));
+      note.addEventListener('drop', this.handleDrop.bind(this));
+      note.addEventListener('touchstart', this.handleTouchStart.bind(this));
+      note.addEventListener('touchmove', this.handleTouchMove.bind(this));
+      note.addEventListener('touchend', this.handleTouchEnd.bind(this));
+    });
+    document.getElementById('checkButton').addEventListener('click', () => this.checkOrder());
+    document.getElementById('resetButton').addEventListener('click', () => this.init());
+  }
+  handleDragStart(e) {
+    e.target.classList.add('dragging');
+    this.draggedElement = e.target;
+  }
+  handleDragEnd(e) {
+    e.target.classList.remove('dragging');
+  }
+  handleDragOver(e) {
+    e.preventDefault();
+  }
+  handleDrop(e) {
+    e.preventDefault();
+    if (this.draggedElement !== e.target) {
+      const allNotes = [...document.querySelectorAll('.sticky-note')];
+      const draggedPos = allNotes.indexOf(this.draggedElement);
+      const droppedPos = allNotes.indexOf(e.target);
+      if (draggedPos < droppedPos) {
+        e.target.parentNode.insertBefore(this.draggedElement, e.target.nextSibling);
+      } else {
+        e.target.parentNode.insertBefore(this.draggedElement, e.target);
+      }
+      this.updateCurrentOrder();
+    }
+  }
+  handleTouchStart(e) {
+    const touch = e.touches[0];
+    this.touchStartX = touch.clientX;
+    this.touchStartY = touch.clientY;
+    this.draggedElement = e.target;
+    e.target.classList.add('dragging');
+  }
+  handleTouchMove(e) {
+    if (!this.draggedElement) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const moveX = touch.clientX - this.touchStartX;
+    const moveY = touch.clientY - this.touchStartY;
+    this.draggedElement.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  }
+  handleTouchEnd(e) {
+    if (!this.draggedElement) return;
+    const touch = e.changedTouches[0];
+    const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
+    const dropTarget = elements.find(el => el.classList.contains('sticky-note') && el !== this.draggedElement);
+    if (dropTarget) {
+      const allNotes = [...document.querySelectorAll('.sticky-note')];
+      const draggedPos = allNotes.indexOf(this.draggedElement);
+      const droppedPos = allNotes.indexOf(dropTarget);
+      if (draggedPos < droppedPos) {
+        dropTarget.parentNode.insertBefore(this.draggedElement, dropTarget.nextSibling);
+      } else {
+        dropTarget.parentNode.insertBefore(this.draggedElement, dropTarget);
+      }
+      this.updateCurrentOrder();
+    }
+    this.draggedElement.style.transform = '';
+    this.draggedElement.classList.remove('dragging');
+    this.draggedElement = null;
+  }
+  updateCurrentOrder() {
+    const notes = document.querySelectorAll('.sticky-note');
+    this.currentOrder = [...notes].map(note => parseInt(note.dataset.order));
+  }
+  checkOrder() {
+    const messageDiv = document.getElementById('message');
+    const isCorrect = this.currentOrder.every((order, index) => order === index + 1);
+    messageDiv.className = 'message ' + (isCorrect ? 'success' : 'error');
+    messageDiv.textContent = isCorrect ? '¡Felicitaciones! Has ordenado correctamente la historia.' : 'El orden no es correcto. ¡Sigue intentando!';
+  }
+}
+document.addEventListener('touchmove', function (e) {
+  if (e.target.classList.contains('sticky-note')) {
+    e.preventDefault();
+  }
+}, {
+  passive: false
+});
+document.addEventListener('DOMContentLoaded', () => {
+  new StoryGame();
+});</script>
+</body>
+</html>
